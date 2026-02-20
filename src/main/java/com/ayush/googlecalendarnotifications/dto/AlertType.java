@@ -1,4 +1,4 @@
-package com.ayush.googlecalendarnotifications;
+package com.ayush.googlecalendarnotifications.dto;
 
 public enum AlertType {
     FIFTEEN_MINUTES_BEFORE,

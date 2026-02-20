@@ -1,5 +1,8 @@
-package com.ayush.googlecalendarnotifications;
+package com.ayush.googlecalendarnotifications.service;
 
+import com.ayush.googlecalendarnotifications.dto.AlertTask;
+import com.ayush.googlecalendarnotifications.dto.AlertType;
+import com.ayush.googlecalendarnotifications.dto.Meeting;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -15,9 +18,9 @@ public class AlertStorage {
     // Key: The specific Minute (Epoch Minute), Value: List of Alerts to fire then
     private final Map<Long, List<AlertTask>> alertSchedule = new ConcurrentHashMap<>();
 
-    public void rebuildSchedule(List<MeetingDto> meetings) {
+    public void rebuildSchedule(List<Meeting> meetings) {
         alertSchedule.clear();
-        for (MeetingDto meeting : meetings) {
+        for (Meeting meeting : meetings) {
             Instant start = Instant.parse(meeting.getStartTime());
 
             // Generate the 3 "Alert Moments" for this meeting
@@ -27,7 +30,7 @@ public class AlertStorage {
         }
     }
 
-    private void createAlert(MeetingDto meeting, Instant alertTime, AlertType type) {
+    private void createAlert(Meeting meeting, Instant alertTime, AlertType type) {
         // Only schedule if the alert time is in the future
         if (alertTime.isAfter(Instant.now())) {
             long minuteEpoch = alertTime.truncatedTo(ChronoUnit.MINUTES).getEpochSecond() / 60;
