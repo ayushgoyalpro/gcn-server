@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AlertTask {
+public class Alert {
     private String title;
     private AlertType type;
 }

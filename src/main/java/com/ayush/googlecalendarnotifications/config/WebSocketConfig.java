@@ -2,6 +2,7 @@ package com.ayush.googlecalendarnotifications.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
@@ -10,7 +11,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        scheduler.setPoolSize(1);
+        scheduler.setThreadNamePrefix("wss-heartbeat-thread-");
+        scheduler.initialize();
+        config.enableSimpleBroker("/topic")
+              .setHeartbeatValue(new long[]{30000, 30000})
+              .setTaskScheduler(scheduler);
         config.setApplicationDestinationPrefixes("/app");
     }
 

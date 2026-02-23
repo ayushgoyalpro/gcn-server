@@ -1,7 +1,6 @@
 package com.ayush.googlecalendarnotifications.service;
 
-import com.ayush.googlecalendarnotifications.dto.AlertTask;
-import com.ayush.googlecalendarnotifications.dto.AlertType;
+import com.ayush.googlecalendarnotifications.dto.Alert;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -35,7 +34,7 @@ public class AlertDispatcher {
     @Scheduled(cron = "0 * * * * *") // Runs exactly at the start of every minute
     public void dispatch() {
         long currentMinuteEpoch = Instant.now().truncatedTo(ChronoUnit.MINUTES).getEpochSecond() / 60;
-        List<AlertTask> alerts = storage.getAlertsForMinute(currentMinuteEpoch);
+        List<Alert> alerts = storage.getAlertsForMinute(currentMinuteEpoch);
         alerts.forEach(alert -> {
             log.info("[{}] {}: {}", Instant.now(), alert.getType(), alert.getTitle());
             ntfy(alert);
@@ -43,11 +42,11 @@ public class AlertDispatcher {
         });
     }
 
-    private void wsNotify(AlertTask alert) {
+    public void wsNotify(Alert alert) {
         messagingTemplate.convertAndSend("/topic/meetings", alert);
     }
 
-    private void ntfy(AlertTask alert) {
+    private void ntfy(Alert alert) {
         String message = alert.getTitle() + " - " + alert.getType().message();
         try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
