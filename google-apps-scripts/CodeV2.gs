@@ -1,5 +1,5 @@
 function syncDailyMeetingsV2() {
-  const SERVER_URL = "https://google-calendar-notifications.onrender.com/api/sync";
+  const SERVER_URL = "http://localhost:8080/api/sync";
   const scriptCache = CacheService.getScriptCache();
 
   // 1. Get full day range

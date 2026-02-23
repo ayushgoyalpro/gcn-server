@@ -1,5 +1,5 @@
 function syncDailyMeetings() {
-  const SERVER_URL = "https://google-calendar-notifications.onrender.com/api/sync";
+  const SERVER_URL = "http://localhost:8080/api/sync";
 
   const beginingOfDay = new Date();
   beginingOfDay.setHours(00, 00, 00, 000)
